@@ -3,7 +3,8 @@ const app = express();
 const {connectToDb, getDb} = require('./db');
 const { ObjectId } = require('mongodb');
 
-
+//init app and middleware
+app.use(express.json());
 
 
 // connect to db
@@ -57,6 +58,18 @@ app.get('/chats/:id', (req, res) => {
 });
 
 
+app.post('/chats', (req, res) => {
+    const chat = req.body;
+
+    db.collection('chats')
+        .insertOne(chat)
+        .then(result => {
+            res.status(201).json(result)
+        })
+        .catch(err => {
+            res.status(500).json({ error: "could not create a new chat" });
+        })
+})
 
 
 
