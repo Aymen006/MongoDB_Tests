@@ -96,8 +96,26 @@ app.delete('/chats/:id', (req, res) => {
 })
 
 
+app.patch('/chats/:id', (req, res) => {
+    const id = req.params.id;
+    const update = req.body;
 
+    if (ObjectId.isValid(id)) {
+        db.collection('chats')
+            .updateOne({ _id: new ObjectId(id) }, { $set: update })
+            .then(doc => {
+                if (!doc) {
+                    return res.status(404).json({ error: "Chat not found" });
+                }
+                res.status(200).json(doc);
+            })
+            .catch(err => {
+                res.status(500).json({ error: "Could not update the document" });
+            });
+    } else {
+        res.status(400).json({ error: "Invalid ID" });
+    }
 
-
+})
 
 
