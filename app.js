@@ -58,6 +58,7 @@ app.get('/chats/:id', (req, res) => {
 });
 
 
+//adding documents
 app.post('/chats', (req, res) => {
     const chat = req.body;
 
@@ -70,6 +71,33 @@ app.post('/chats', (req, res) => {
             res.status(500).json({ error: "could not create a new chat" });
         })
 })
+
+
+//deleting documents
+app.delete('/chats/:id', (req, res) => {
+    const id = req.params.id;
+
+    if (ObjectId.isValid(id)) {
+        db.collection('chats')
+            .deleteOne({ _id: new ObjectId(id) })
+            .then(doc => {
+                if (!doc) {
+                    return res.status(404).json({ error: "Chat not found" });
+                }
+                res.status(200).json(doc);
+            })
+            .catch(err => {
+                res.status(500).json({ error: "Could not delete the document" });
+            });
+    } else {
+        res.status(400).json({ error: "Invalid ID" });
+    }
+
+})
+
+
+
+
 
 
 
